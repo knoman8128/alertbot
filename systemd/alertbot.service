@@ -1,0 +1,20 @@
+[Unit]
+Description=Alert Bot
+Wants = network-online.target systemd-networkd-wait-online.service
+After = network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root
+EnvironmentFile=/home/bot/workspace/alertbot/.env
+ExecStart=/home/bot/workspace/alertbot/main
+ExecReload=/bin/kill -USR1 $MAINPID
+ExecStop=/bin/kill -SIGTERM $MAINPID
+
+KillMode=control-group
+Restart=on-failure
+RestartSec=10s
+StandardOutput = syslog
+
+[Install]
+WantedBy=multi-user.target
